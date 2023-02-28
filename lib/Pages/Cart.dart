@@ -1,9 +1,28 @@
 import 'package:day24/Information_Page.dart';
 import 'package:flutter/material.dart';
 
-class Cart extends StatelessWidget {
-   Cart({Key? key}) : super(key: key);
-var _data=Information_page.info();
+class Cart extends StatefulWidget {
+   Cart({Key? key,this.cartdata}) : super(key: key);
+List<Information_page>? cartdata;
+  @override
+  State<Cart> createState() => _CartState();
+}
+
+class _CartState extends State<Cart> {
+  var netTotal;
+
+  void getTotal(){
+    netTotal = widget.cartdata!.map((item) => item.price.toInt() * item.quantity )
+        .reduce((value, element) => value+element);
+  }
+
+  @override
+  void initState()  {
+    // TODO: implement initState
+    widget.cartdata!.length>0?  getTotal() :null;
+    print("ikhdfdasgasiuasgifruisrgfsdgfiusdgfiuosdghfiudg");
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +52,6 @@ var _data=Information_page.info();
         ],
       ),
       body: ListView.separated(
-
           itemBuilder: (context,i){
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,21 +62,21 @@ var _data=Information_page.info();
                   width: 100,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(image: NetworkImage(_data[i].productImg),),
+                    image: DecorationImage(image: NetworkImage("${widget.cartdata![i].productImg}"),),
                   ),
                 ),
                 SizedBox(width: 10,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_data[i].description),
-                    Text(_data[i].productName,
+                    Text("${widget.cartdata![i].description}"),
+                    Text("${widget.cartdata![i].productName}",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500
                     ),
                     ),
-                    Text("${_data[i].price}k.BDT "),
+                    Text("${widget.cartdata![i].price}k.BDT "),
                     SizedBox(height: 40,),
                     Row(
                       children: [
@@ -100,7 +118,7 @@ var _data=Information_page.info();
           separatorBuilder: (context,i){
         return SizedBox(height: 20,);
           },
-          itemCount: _data.length
+          itemCount: widget.cartdata!.length,
       ),
     );
   }

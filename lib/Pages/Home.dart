@@ -1,11 +1,21 @@
+import 'package:day24/Details_Page.dart';
 import 'package:day24/Information_Page.dart';
+import 'package:day24/Pages/Cart.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
-var _data=Information_page.info();
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  List<Information_page> data = [];
+
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -86,16 +96,29 @@ var _data=Information_page.info();
                     physics: NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 300,
-                      mainAxisExtent: 300,
+                      mainAxisExtent: 350,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
                     ),
-                    itemCount: _data.length,
+                    itemCount: info.length,
                     itemBuilder: (context, i) {
                       return InkWell(
-                        onTap: (){},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Details_page(
+                                info[i].productImg,
+                                info[i].productName,
+                                info[i].description,
+                                info[i].country,
+                                info[i].price,
+                                info[i].color,
+                              ),
+                            ),
+                          );
+                        },
                         child: Container(
-
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.grey,
@@ -113,22 +136,23 @@ var _data=Information_page.info();
                               )
                             ],
                           ),
-                          child:Column(
+                          child: Column(
                             children: [
                               Container(
                                 height: 200,
                                 width: 200,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(image: NetworkImage(_data[i].productImg),
-                                  fit: BoxFit.fill
-                                  ),
+                                  image: DecorationImage(
+                                      image:
+                                          NetworkImage("${info[i].productImg}"),
+                                      fit: BoxFit.fill),
                                 ),
                                 child: Stack(
                                   children: [
                                     Positioned(
                                       top: 35,
-                                     right: 10,
+                                      right: 10,
                                       child: CircleAvatar(
                                         backgroundColor: Colors.indigoAccent,
                                         child: Text('OV\n23'),
@@ -137,7 +161,8 @@ var _data=Information_page.info();
                                     Positioned(
                                       right: 10,
                                       child: CircleAvatar(
-                                        backgroundColor: Colors.pinkAccent.withOpacity(0.7),
+                                        backgroundColor:
+                                            Colors.pinkAccent.withOpacity(0.7),
                                         child: Text('96'),
                                       ),
                                     ),
@@ -145,27 +170,63 @@ var _data=Information_page.info();
                                 ),
                               ),
                               Text(
-                               _data[i].productName,
+                                "${info[i].productName}",
                                 style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 5,
                               ),
                               Text(
-                                _data[i].description,
+                                "${info[i].description}",
                                 style: TextStyle(),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
-                              Text(
-                                '${_data[i].price}k.BDT',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${info[i].price}k.BDT',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        try {
+                                          data.firstWhere((element) =>
+                                              element.id == info[i].id);
+                                          var snackBar = SnackBar(
+                                            content:
+                                                Text('Already Added this item'),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                        } catch (e) {
+                                          data.add(info[i]);
+                                          setState(() {});
+                                        }
+                                      },
+                                      icon: Icon(Icons.card_travel)),
+                                ],
                               ),
+                              MaterialButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => Cart(
+                                        cartdata: data,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text("Go To Cart"),
+                                color: Colors.red,
+                                height: size.height * 0.05,
+                              )
                             ],
                           ),
                         ),
