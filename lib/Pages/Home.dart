@@ -1,23 +1,29 @@
+import 'package:day24/Controller/Cart_Controller.dart';
 import 'package:day24/Details_Page.dart';
 import 'package:day24/Information_Page.dart';
 import 'package:day24/Pages/Cart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  List<Information_page> data = [];
+  CartController cartController=Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        title: GetBuilder<CartController>(
+          builder: (controoler){
+            return  Text("toatl cart item is ${cartController.data.length}",style: TextStyle(color: Colors.black),);
+          },
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -197,7 +203,7 @@ class _HomeState extends State<Home> {
                                   IconButton(
                                       onPressed: () {
                                         try {
-                                          data.firstWhere((element) =>
+                                          cartController.data.firstWhere((element) =>
                                               element.id == info[i].id);
                                           var snackBar = SnackBar(
                                             content:
@@ -206,8 +212,7 @@ class _HomeState extends State<Home> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(snackBar);
                                         } catch (e) {
-                                          data.add(info[i]);
-                                          setState(() {});
+                                          cartController.addtocart(info[i]);
                                         }
                                       },
                                       icon: Icon(Icons.card_travel)),
@@ -217,9 +222,7 @@ class _HomeState extends State<Home> {
                                 onPressed: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => Cart(
-                                        cartdata: data,
-                                      ),
+                                      builder: (context) => Cart(),
                                     ),
                                   );
                                 },
