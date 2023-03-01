@@ -14,9 +14,17 @@ class CartController extends GetxController{
     data.removeAt(index);
     update();
   }
+  void Decrement(int index){
+    data[index].quantity > 0
+        ? data[index].quantity--
+        : data.removeAt(index);
+       getTotal();
+       update();
+  }
 
   incrementQuantity(int index){
     data[index].quantity++;
+    getTotal();
     update();
   }
 

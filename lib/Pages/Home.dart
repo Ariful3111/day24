@@ -5,13 +5,8 @@ import 'package:day24/Pages/Cart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
 
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
   CartController cartController=Get.put(CartController());
 
   @override
@@ -190,43 +185,28 @@ class _HomeState extends State<Home> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '${info[i].price}k.BDT',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  IconButton(
-                                      onPressed: () {
-                                        try {
-                                          cartController.data.firstWhere((element) =>
-                                              element.id == info[i].id);
-                                          var snackBar = SnackBar(
-                                            content:
-                                                Text('Already Added this item'),
-                                          );
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
-                                        } catch (e) {
-                                          cartController.addtocart(info[i]);
-                                        }
-                                      },
-                                      icon: Icon(Icons.card_travel)),
-                                ],
+                              Text(
+                                '${info[i].price}k.BDT',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
                               MaterialButton(
                                 onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => Cart(),
-                                    ),
-                                  );
+                                  try {
+                                    cartController.data.firstWhere((element) =>
+                                    element.id == info[i].id);
+                                    var snackBar = SnackBar(
+                                      content:
+                                      Text('Already Added this item'),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  } catch (e) {
+                                    cartController.addtocart(info[i]);
+                                  }
                                 },
-                                child: Text("Go To Cart"),
+                                child: Text("Add To Cart"),
                                 color: Colors.red,
                                 height: size.height * 0.05,
                               )
